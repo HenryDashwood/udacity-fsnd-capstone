@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 from models import setup_db, Movies, Actors
 from auth import AuthError, requires_auth
@@ -41,7 +41,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "movies": movies
             }
-        except:
+        except Exception as e:
             db.rollback()
             abort(404)
         finally:
@@ -57,7 +57,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "actors": actors
             }
-        except:
+        except Exception as e:
             db.session.rollback()
             abort(404)
         finally:
@@ -78,7 +78,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "movie": movie.format()
             }
-        except:
+        except Exception as e:
             db.session.rollback()
             abort(422)
         finally:
@@ -100,7 +100,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "actor": actor.format()
             }
-        except:
+        except Exception as e:
             db.session.rollback()
             abort(422)
         finally:
@@ -119,7 +119,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "movie": movie.format()
             }
-        except:
+        except Exception as e:
             db.session.rollback()
             abort(422)
         finally:
@@ -139,7 +139,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "actor": actor.format()
             }
-        except:
+        except Exception as e:
             db.session.rollback()
             abort(422)
         finally:
@@ -160,7 +160,6 @@ def create_app(test_config=None, test=False):
                 "movie": movie.format()
             }
         except Exception as e:
-            print(e)
             db.session.rollback()
             abort(422)
         finally:
@@ -181,7 +180,7 @@ def create_app(test_config=None, test=False):
                 "success": True,
                 "actor": actor.format()
             }
-        except:
+        except Exception as e:
             db.session.rollback()
             abort(422)
         finally:
@@ -211,16 +210,6 @@ def create_app(test_config=None, test=False):
             "message": "Method Not Allowed"
         }, 405
 
-    @app.errorhandler(422)
-    def unprocessable(error):
-        return {
-            "success": False,
-            "error": 422,
-            "message": "Unprocessable"
-        }, 422
-
-    return app
-
     @app.errorhandler(AuthError)
     def handle_auth_error(ex):
         """
@@ -229,6 +218,15 @@ def create_app(test_config=None, test=False):
         response = jsonify(ex.error)
         response.status_code = ex.status_code
         return response
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return {
+            "success": False,
+            "error": 422,
+            "message": "Unprocessable"
+        }, 422
+    return app
 
 
 app = create_app()
