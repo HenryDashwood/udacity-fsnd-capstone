@@ -25,12 +25,7 @@ def create_app(test_config=None, test=False):
         )
         return response
 
-    if test:
-        db_path = "test_casting"
-    else:
-        db_path = "casting"
-
-    db = setup_db(app, f"postgres://postgres:root@localhost:5432/{db_path}")
+    db = setup_db(app)
 
     @app.route('/', methods=['GET'])
     def hello():
