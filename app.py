@@ -30,7 +30,7 @@ def create_app(test_config=None, test=False):
     else:
         db_path = "casting"
 
-    db = setup_db(app, f"postgres://henry.dashwood@localhost:5432/{db_path}")
+    db = setup_db(app, f"postgres://postgres.root@localhost:5432/{db_path}")
 
     @app.route('/', methods=['GET'])
     def hello():
